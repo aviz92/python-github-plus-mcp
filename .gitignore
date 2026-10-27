@@ -35,8 +35,7 @@ MANIFEST
 # Package Managers
 # ============================================================
 
-# uv
-uv.lock
+# uv (uv.lock is tracked: the Dockerfile installs with --frozen)
 
 # pipenv
 #Pipfile.lock
@@ -188,7 +187,6 @@ docker-compose.override.yml
 
 # Claude
 .claude
-CLAUDE.md
 CLAUDE.local.md
 
 # Marketplace install outputs (derived — sources live in skills/ and rules/)
