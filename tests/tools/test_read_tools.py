@@ -140,3 +140,14 @@ async def test_workflow_runs(gh: MagicMock) -> None:
     )
     gh.workflow.list_runs.assert_called_once_with("ci.yml", branch="main", limit=2)
     assert result["items"][0]["conclusion"] == "success"
+
+
+async def test_list_tools_wrap_results(gh: MagicMock) -> None:
+    gh.file.list_dir.return_value = [SimpleNamespace(name="a.py", path="src/a.py", type="file", size=3)]
+    gh.workflow.list.return_value = [SimpleNamespace(id=1, name="CI", path=".github/workflows/ci.yml", state="active")]
+    server = create_server(make_settings())
+    _, entries = await server.call_tool("github_list_directory", {"path": "src", "ref": "dev"})
+    gh.file.list_dir.assert_called_once_with("src", ref="dev")
+    assert entries == {"result": [{"name": "a.py", "path": "src/a.py", "type": "file", "size": 3}]}
+    _, workflows = await server.call_tool("github_list_workflows", {})
+    assert workflows["result"][0]["file"] == "ci.yml"

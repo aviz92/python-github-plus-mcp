@@ -48,8 +48,8 @@ async def test_closed_list_reports_merged(server: FastMCP) -> None:
 
 
 async def test_directory_and_file(server: FastMCP) -> None:
-    _, entries = await server.call_tool("github_list_directory", {})
-    files = [e["path"] for e in entries if e["type"] == "file"]
+    _, entries = await server.call_tool("github_list_directory", {})  # lists come back as {"result": [...]}
+    files = [e["path"] for e in entries["result"] if e["type"] == "file"]
     assert files
     _, content = await server.call_tool("github_get_file", {"path": files[0]})
     assert content["path"] == files[0] and content["size"] == len(content["content"])
@@ -62,7 +62,8 @@ async def test_missing_file_is_a_tool_error_with_hint(server: FastMCP) -> None:
 
 async def test_workflows(server: FastMCP) -> None:
     _, workflows = await server.call_tool("github_list_workflows", {})
-    if not workflows:
+    if not workflows["result"]:
         pytest.skip(f"{TEST_REPO} has no workflows")
-    _, runs = await server.call_tool("github_list_workflow_runs", {"workflow": workflows[0]["file"], "limit": 1})
+    workflow = workflows["result"][0]["file"]
+    _, runs = await server.call_tool("github_list_workflow_runs", {"workflow": workflow, "limit": 1})
     assert runs["returned"] <= 1
