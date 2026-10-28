@@ -34,8 +34,7 @@ Add the server to `claude_desktop_config.json`, then restart the app:
         "python-github-plus-mcp"
       ],
       "env": {
-        "GITHUB_ACCESS_TOKEN": "github_pat_...",
-        "GITHUB_MCP_DEFAULT_REPO": "your-user/your-repo"
+        "GITHUB_ACCESS_TOKEN": "github_pat_..."
       }
     }
   }
